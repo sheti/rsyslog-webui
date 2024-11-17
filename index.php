@@ -3,429 +3,387 @@
 <?php include 'config.php'; ?>
 
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?php echo $site_name; ?></title>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title><?php echo $site_name; ?></title>
 
-    <!-- Bootstrap -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/bootstrap-table.min.css" rel="stylesheet">
-    <link href="css/bootstrap-tooltip.css" rel="stylesheet">
-	<link href="css/bootstrap-context.css" rel="stylesheet"> 
-    <link href="css/custom.css" rel="stylesheet">   
+        <!-- Bootstrap -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+              rel="stylesheet"
+              integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+              crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.23.5/dist/bootstrap-table.min.css">
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-	<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-	<link rel="manifest" href="site.webmanifest">
-  </head>
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+        <link rel="manifest" href="site.webmanifest">
+        <style>
+            .progress-stacked, .progress {
+                --bs-progress-height: 2rem;
+            }
+        </style>
+    </head>
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/bootstrap-table.min.js"></script>
-	<script src="js/bootstrap-tooltip.js"></script>
-	<script src="js/bootstrap-context.js"></script> 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.23.5/dist/bootstrap-table.min.js"></script>
 
-  	<script type="text/javascript">
+    <script type="text/javascript">
 	
-	$(function () {
-		
-		var firstRowID, lastRowID;
-		
-		getSummary();
-		
-		var selectedRow = "";
-		var selectedNodeText = "";
+    $(function () {
+        
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 
-		context.init({
-			fadeSpeed: 100,
-			filter: function ($obj){},
-			above: 'auto',
-			preventDoubleContext: true,
-			compress: false
-		});
+        getEvents();
 
-		var menu = "", menudate = "";
-		
-		$('#table-style').css( 'cursor', 'pointer' );
+        var selectedNodeText = "";
 
-		$("#table-style").delegate("tr td", "mousedown", function(event) {
-			if(event.which == 3){
-				
-				context.destroy();
-				//context.destroy($("table-style tr"));
+        /*context.init({
+            fadeSpeed: 100,
+            filter: function ($obj){},
+            above: 'auto',
+            preventDoubleContext: true,
+            compress: false
+        });*/
 
-				var selectedRow = $(this);
-				selectedNodeText = selectedRow.html();
-				selectedColumn = "";
-				
-				if(selectedRow.find('span').length > 0) selectedNodeText = selectedRow.find('span').html();
+        var menu = "", menudate = "";
 
-				if( selectedRow.index() == 6 ) return;
-				if( selectedRow.index() == 0 && selectedRow.hasClass('expandedMessage') == false ) selectedColumn = "Severity";
-				if( selectedRow.index() == 1 ) 
-				{
-					selectedNodeText = selectedNodeText.replace( " ", "T" );
-					selectedColumn = "Date";
-				}
-				if( selectedRow.index() == 2 ) selectedColumn = "Facility";
-				if( selectedRow.index() == 3 ) selectedColumn = "Host";
-				if( selectedRow.index() == 4 ) selectedColumn = "Syslogtag";
-				if( selectedRow.index() == 5 ) return;
-				if( selectedRow.hasClass('expandedMessage') == true ) return;
-				
-				menudate = [{
-				text: 'Add logs newer than \'' + selectedNodeText + '\' to filterset',
-				action: function () {
-						$("#txtSearch").val($("#txtSearch").val() + "\"" + selectedColumn + "\">\"" + selectedNodeText + "\" ");
-						$('#cmdSearch').click();
-						context.destroy();
-					}
-				}, {
-					text: 'Add logs older than \'' + selectedNodeText + '\' in filterset',
-					action: function (t) {
-						$("#txtSearch").val($("#txtSearch").val() + "\"" + selectedColumn + "\"<\"" + selectedNodeText + "\" ");
-						$('#cmdSearch').click();
-						context.destroy();
-					}
-				}];
-				
-				menu = [{
-				text: 'Add \'' + selectedNodeText + '\' to filterset',
-				action: function () {
-						$("#txtSearch").val($("#txtSearch").val() + "\"" + selectedColumn + "\"=\"" + selectedNodeText + "\" ");
-						$('#cmdSearch').click();
-						context.destroy();
-					}
-				}, {
-					text: 'Exclude \'' + selectedNodeText + '\' in filterset',
-					action: function (t) {
-						$("#txtSearch").val($("#txtSearch").val() + "\"" + selectedColumn + "\"<>\"" + selectedNodeText + "\" ");
-						$('#cmdSearch').click();
-						context.destroy();
-					}
-				}];
-				
-				if( selectedRow.index() == 1 ) 
-					context.attach($("table-style tr"), menudate);
-				else
-					context.attach($("table-style tr"), menu);
-			}
-		}); 
-	
-		$('#table-style').on('click-row.bs.table', function (e, row, $element) {
-			//console.log( JSON.stringify( row ) );
-			
-			if( $element.hasClass('expandedMessage') == false)
-			{
-				// Add new tr with full message + add class
-				$element.after('<tr><td colspan="7" class="expandedMessage"><div class="increase-font-size">' + escapeHtml(row.Message) + '</div></td></tr>');
-				$element.addClass('expandedMessage');
-			}
-			else
-			{
-				// Remove previous created tr + remove class
-				$element.closest('tr').next().remove();
-				$element.removeClass('expandedMessage');
-			}
-		});
+        $('#table-style').css( 'cursor', 'pointer' );
 
-		$('[data-toggle="tooltip"]').tooltip({
-			'placement': 'top',  
-			'trigger': 'hover focus'
-		});
+        $("#table-style").delegate("tr td", "mousedown", function(event) {
+                if(event.which == 3){
 
-		$('[data-toggle="tooltip-bottom"]').tooltip({
-			'placement': 'bottom',  
-			'trigger': 'hover focus'
-		});
-		
-		$('#cmdSearch').click(function(e) {
-			var classes = 'table table-hover small-table table-striped';
-			e.preventDefault();
-			var search = $('#txtSearch').val();
-			//$('#txtSearch').val(search);
-			
-			getSummary();
+                        context.destroy();
+                        //context.destroy($("table-style tr"));
 
-			$('#table-style').bootstrapTable('destroy')
-				.bootstrapTable({
-					classes: classes,
-					url: 'json/events.php?&search=' + encodeURIComponent(search)
-			});
-			
-			console.log(encodeURIComponent(search));
-		});
-		
-		$('#cmdReset').click(function (e) {
-			e.preventDefault();
-			$("#txtSearch").val("");
-			$('#cmdSearch').click();
-		});
+                        var selectedRow = $(this);
+                        selectedNodeText = selectedRow.html();
+                        selectedColumn = "";
 
-		$("#pgDebug").on("click", function() {
-			$("#txtSearch").val($("#txtSearch").val() + "\"Severity\"=\"DEBUG\" ");
-			$('#cmdSearch').click();
-		});
+                        if(selectedRow.find('span').length > 0) selectedNodeText = selectedRow.find('span').html();
 
-		$("#pgNotice").on("click", function() {
-			$("#txtSearch").val($("#txtSearch").val() + "\"Severity\"=\"NOTICE\" ");
-			$('#cmdSearch').click();
-		});
+                        if( selectedRow.index() == 6 ) return;
+                        if( selectedRow.index() == 0 && selectedRow.hasClass('expandedMessage') == false ) selectedColumn = "Severity";
+                        if( selectedRow.index() == 1 ) 
+                        {
+                                selectedNodeText = selectedNodeText.replace( " ", "T" );
+                                selectedColumn = "Date";
+                        }
+                        if( selectedRow.index() == 2 ) selectedColumn = "Facility";
+                        if( selectedRow.index() == 3 ) selectedColumn = "Host";
+                        if( selectedRow.index() == 4 ) selectedColumn = "Syslogtag";
+                        if( selectedRow.index() == 5 ) return;
+                        if( selectedRow.hasClass('expandedMessage') == true ) return;
 
-		$("#pgInfo").on("click", function() {
-			$("#txtSearch").val($("#txtSearch").val() + "\"Severity\"=\"INFO\" ");
-			$('#cmdSearch').click();
-		});
+                        menudate = [{
+                        text: 'Add logs newer than \'' + selectedNodeText + '\' to filterset',
+                        action: function () {
+                                        $("#txtSearch").val($("#txtSearch").val() + "\"" + selectedColumn + "\">\"" + selectedNodeText + "\" ");
+                                        $('#cmdSearch').click();
+                                        context.destroy();
+                                }
+                        }, {
+                                text: 'Add logs older than \'' + selectedNodeText + '\' in filterset',
+                                action: function (t) {
+                                        $("#txtSearch").val($("#txtSearch").val() + "\"" + selectedColumn + "\"<\"" + selectedNodeText + "\" ");
+                                        $('#cmdSearch').click();
+                                        context.destroy();
+                                }
+                        }];
 
-		$("#pgWarning").on("click", function() {
-			$("#txtSearch").val($("#txtSearch").val() + "\"Severity\"=\"WARNING\" ");
-			$('#cmdSearch').click();
-		});
+                        menu = [{
+                        text: 'Add \'' + selectedNodeText + '\' to filterset',
+                        action: function () {
+                                        $("#txtSearch").val($("#txtSearch").val() + "\"" + selectedColumn + "\"=\"" + selectedNodeText + "\" ");
+                                        $('#cmdSearch').click();
+                                        context.destroy();
+                                }
+                        }, {
+                                text: 'Exclude \'' + selectedNodeText + '\' in filterset',
+                                action: function (t) {
+                                        $("#txtSearch").val($("#txtSearch").val() + "\"" + selectedColumn + "\"<>\"" + selectedNodeText + "\" ");
+                                        $('#cmdSearch').click();
+                                        context.destroy();
+                                }
+                        }];
 
-		$("#pgError").on("click", function() {
-			$("#txtSearch").val($("#txtSearch").val() + "\"Severity\"=\"ERROR\" ");
-			$('#cmdSearch').click();
-		});
+                        if( selectedRow.index() == 1 ) 
+                                context.attach($("table-style tr"), menudate);
+                        else
+                                context.attach($("table-style tr"), menu);
+                }
+        }); 
+
+        $('#table-style').on('click-row.bs.table', function (e, row, $element) {
+                //console.log( JSON.stringify( row ) );
+
+                if( $element.hasClass('expandedMessage') == false) {
+                    // Add new tr with full message + add class
+                    $element.after('<tr><td colspan="7" class="expandedMessage"><div class="increase-font-size">' + escapeHtml(row.Message) + '</div></td></tr>');
+                    $element.addClass('expandedMessage');
+                } else {
+                    // Remove previous created tr + remove class
+                    $element.closest('tr').next().remove();
+                    $element.removeClass('expandedMessage');
+                }
+        });
+
+        $('#cmdSearch').click(function(e) {
+            //var classes = 'table table-hover small-table table-striped';
+            e.preventDefault();
+            //var search = $('#txtSearch').val();
+            //$('#txtSearch').val(search);
+
+            getEvents();
+
+            /*$('#table-style').bootstrapTable('destroy')
+                    .bootstrapTable({
+                            classes: classes,
+                            url: 'json/events.php?&search=' + encodeURIComponent(search)
+            });*/
+
+            //console.log(encodeURIComponent(search));
+        });
+
+        $('#cmdReset').click(function (e) {
+                e.preventDefault();
+                $("#txtSearch").val("");
+                $('#cmdSearch').click();
+        });
+
+        $("#pgDebug").on("click", function() {
+                $("#txtSearch").val($("#txtSearch").val() + "\"Severity\"=\"DEBUG\" ");
+                $('#cmdSearch').click();
+        });
+
+        $("#pgNotice").on("click", function() {
+                $("#txtSearch").val($("#txtSearch").val() + "\"Severity\"=\"NOTICE\" ");
+                $('#cmdSearch').click();
+        });
+
+        $("#pgInfo").on("click", function() {
+                $("#txtSearch").val($("#txtSearch").val() + "\"Severity\"=\"INFO\" ");
+                $('#cmdSearch').click();
+        });
+
+        $("#pgWarning").on("click", function() {
+                $("#txtSearch").val($("#txtSearch").val() + "\"Severity\"=\"WARNING\" ");
+                $('#cmdSearch').click();
+        });
+
+        $("#pgError").on("click", function() {
+                $("#txtSearch").val($("#txtSearch").val() + "\"Severity\"=\"ERROR\" ");
+                $('#cmdSearch').click();
+        });
 		
     });
+    
+    function getEvents() {
+        var search_string = $("#txtSearch").val();
+        if(search_string.length > 0) {
+            search_string = '?search=' + encodeURIComponent(search_string);
+        }
+        $.getJSON( "json/events.php" + search_string, function( data ) {
+            $('#table-style').bootstrapTable('load', data);
+            
+            var sum_events = 0;
+            var data_events = [0, 0, 0, 0, 0, 0, 0, 0];
+            var id_events = ['', '', '', '#pgError', '#pgWarning', '#pgNotice', '#pgInfo', ''];
+            
+            for(var i = 0; i < data.length; i++) {
+                switch(data[i].Priority) {
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7: 
+                        sum_events += 1; ;
+                        data_events[data[i].Priority] += 1;
+                        break;
+                }
+            }
 
-	function getSummary() {
-		$.getJSON( "json/events_summary.php?" + "search=" + encodeURIComponent($("#txtSearch").val()), function( data ) {
-			var items = [];
-			
-			var items = data.length;
-			var sum = 0;
-			
-			for(var x = 0; x < items; x++)
-			{
-				switch(data[x][0])
-				{
-					case "3": { sum = sum + data[x][1]; break; }
-					case "4": { sum = sum + data[x][1]; break; }
-					case "5": { sum = sum + data[x][1]; break; }
-					case "6": { sum = sum + data[x][1]; break; }
-					case "7": { sum = sum + data[x][1]; break; }
-				}
-			}
-			
-			var three = false;
-			var four = false;
-			var five = false;
-			var six = false;
-			var seven = false;
-			
-			for(var x = 0; x < items; x++)
-			{
-				switch(data[x][0])
-				{
-					case "3": { $("#pgError").css('width', ((data[x][1]/sum) * 100) + "%"); three = true; break; }
-					case "4": { $("#pgWarning").css('width', ((data[x][1]/sum) * 100) + "%"); four = true; break; }
-					case "5": { $("#pgNotice").css('width', ((data[x][1]/sum) * 100) + "%"); five = true; break; }
-					case "6": { $("#pgInfo").css('width', ((data[x][1]/sum) * 100) + "%"); six = true; break; }
-					case "7": { $("#pgDebug").css('width', ((data[x][1]/sum) * 100) + "%"); seven = true; break; }
-				}
-			}
-			
-			if( three == false ) { $("#pgError").css('width', "0%"); }
-			if( four == false ) { $("#pgWarning").css('width', "0%"); }
-			if( five == false ) { $("#pgNotice").css('width', "0%"); }
-			if( six == false ) { $("#pgInfo").css('width', "0%"); }
-			if( seven == false ) { $("#pgDebug").css('width', "0%"); }
-			
-		});
-	}
-	
-	function toInt( val ) {
-		return val & 1;
-	}
-	
-	function rowStyle(row, index) {
-		return {
-			classes: 'ID_' + row.ID
-		};
+            for(var i = 0; i < data_events.length; i++) {
+                switch(i) {
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                        if(data_events[i] > 0) {
+                            $(id_events[i]).css('width', Math.round((data_events[i]/sum_events) * 100) + "%");
+                        } else {
+                            $(id_events[i]).css('width', '0%');
+                        }
+                        break; 
+                }
+            }
+        })
+        .fail(function() {
+            console.log( "error" );
+        });
+    }
+    
+    function toInt( val ) {
+            return val & 1;
     }
 	
-	function SeverityFormat(value)
-	{
-		if(value == "0") return "<span class=\"label label-danger\">EMERGENCY</span>"; 
-		if(value == "1") return "<span class=\"label label-danger\">ALERT</span>"; 
-		if(value == "2") return "<span class=\"label label-danger\">CRITICAL</span>"; 
-		if(value == "3") return "<span class=\"label label-danger\">ERROR</span>"; 
-		if(value == "4") return "<span class=\"label label-warning\">WARNING</span>"; 
-		if(value == "5") return "<span class=\"label label-success\">NOTICE</span>"; 
-		if(value == "6") return "<span class=\"label label-info\">INFO</span>"; 
-		if(value == "7") return "<span class=\"label label-primary\">DEBUG</span>"; 
-		else return value;
-	}
+    function rowStyle(row, index) {
+        return {
+            classes: 'ID_' + row.ID
+        };
+    }
 	
-	function MessagetypeFormat(value)
-	{
-		return "SYSLOG";
-	}
-	
-	function MessageFormat(value)
-	{
-		return escapeHtml(value);
-	}
-	
-	function idFormat(value, row)
-	{
-		console.log( row + ": " + value );
-		return value;
-	}
-
-	function LargeMessageFormat(value)
-	{
-		return "<span class='largemessage'>" + value + "</span>";
-	}
-
-	function FacilityFormat(value)
-	{
-		switch(value)
-		{
-			case "0": { return "KERNEL-MESSAGE"; break; }
-			case "1": { return "USER-MESSAGE"; break; }
-			case "2": { return "MAIL-SYSTEM"; break; }
-			case "3": { return "SECURITY-DAEMON"; break; }
-			case "4": { return "AUTH-MESSAGE"; break; }
-			case "5": { return "SYSLOGD"; break; }
-			case "6": { return "PRINTER"; break; }
-			case "7": { return "NETWORK"; break; }
-			case "8": { return "UUCP"; break; }
-			case "9": { return "CRON"; break; }
-			case "10": { return "AUTH-MESSAGE-10"; break; }
-			case "11": { return "FTP"; break; }
-			case "12": { return "NTP"; break; }
-			case "13": { return "LOG-AUDIT"; break; }
-			case "14": { return "LOG-ALERT"; break; }
-			case "15": { return "CLOCK-DAEMON"; break; }
-			case "16": { return "LOCAL0"; break; }
-			case "17": { return "LOCAL1"; break; }
-			case "18": { return "LOCAL2"; break; }
-			case "19": { return "LOCAL3"; break; }
-			case "20": { return "LOCAL4"; break; }
-			case "21": { return "LOCAL5"; break; }
-			case "22": { return "LOCAL6"; break; }
-			case "23": { return "LOCAL7"; break; }
-		}
-	}
-	
-        function escapeHtml(text) {
-                return text
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+    function SeverityFormat(value) {
+        switch(value) {
+            case 0: return "<span class=\"badge bg-danger\">EMERGENCY</span>"; 
+            case 1: return "<span class=\"badge bg-danger\">ALERT</span>"; 
+            case 2: return "<span class=\"badge bg-danger\">CRITICAL</span>"; 
+            case 3: return "<span class=\"badge bg-danger\">ERROR</span>"; 
+            case 4: return "<span class=\"badge bg-warning\">WARNING</span>"; 
+            case 5: return "<span class=\"badge bg-success\">NOTICE</span>"; 
+            case 6: return "<span class=\"badge bg-info\">INFO</span>"; 
+            case 7: return "<span class=\"badge bg-primary\">DEBUG</span>"; 
         }
+        return value;
+    }
 
-	</script>
+    function MessageFormat(value)
+    {
+            return escapeHtml(value);
+    }
+
+    function idFormat(value, row)
+    {
+            //console.log( row + ": " + value );
+            return value;
+    }
+
+    function FacilityFormat(value) {
+        switch(value) {
+            case 0: return "KERNEL-MESSAGE";
+            case 1: return "USER-MESSAGE";
+            case 2: return "MAIL-SYSTEM";
+            case 3: return "SECURITY-DAEMON";
+            case 4: return "AUTH-MESSAGE";
+            case 5: return "SYSLOGD";
+            case 6: return "PRINTER";
+            case 7: return "NETWORK";
+            case 8: return "UUCP";
+            case 9: return "CRON";
+            case 10: return "AUTH-MESSAGE-10";
+            case 11: return "FTP";
+            case 12: return "NTP";
+            case 13: return "LOG-AUDIT";
+            case 14: return "LOG-ALERT";
+            case 15: return "CLOCK-DAEMON";
+            case 16: return "LOCAL0";
+            case 17: return "LOCAL1";
+            case 18: return "LOCAL2";
+            case 19: return "LOCAL3";
+            case 20: return "LOCAL4";
+            case 21: return "LOCAL5";
+            case 22: return "LOCAL6";
+            case 23: return "LOCAL7";
+        }
+        return value;
+    }
+	
+    function escapeHtml(text) {
+        if (typeof text === 'string' || text instanceof String) {
+            return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+        }
+        return text;
+    }
+
+    </script>
   
- <body>
+<body>
  
-<div style="width:90%; margin: 0 auto; display: block">
-<nav class="navbar navbar-default" role="navigation">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-			<span class="sr-only">Toggle navigation</span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-		</button>
-		<a class="navbar-brand" href="#"><?php echo $site_name; ?></a>
-    </div>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary" style="margin-top: 1rem" role="navigation">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/"><?php echo $site_name; ?></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSearch" aria-controls="navbarSearch" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-        <li id="cmdEvents" class="active events" data-toggle="tooltip-bottom" title="Events"><a href="#"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>
-	  </ul>
-      <form class="navbar-form navbar-right" role="search">
-        <div class="form-group">
-          <input id="txtSearch" type="text" class="form-control input-widesearch" placeholder="Search" style="width: 500px">
+                <div class="collapse navbar-collapse" id="navbarSearch">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/"><i class="bi bi-house"></i></a>
+                        </li>
+                    </ul>
+                    <form class="d-flex" role="search">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                            <input id="txtSearch" type="text" class="form-control input-widesearch" placeholder="Search">
+                            <button id="cmdSearch" type="submit" class="btn btn-primary" title="Refresh"><i class="bi bi-arrow-clockwise"></i></button>
+                            <button id="cmdReset" type="submit" class="btn btn-dark" title="Reset all">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </nav>
+
+        <div id="debugmessages" style="margin-top: 1rem"></div>
+
+        <div class="progress-stacked" style="margin-top: 1rem; margin-bottom: 1rem;">
+            <div id="pgDebug" class="progress" role="progressbar" style="width: 0%" title="Debug" data-bs-toggle="tooltip" data-bs-title="Debug">
+                <div class="progress-bar progress-bar-striped bg-primary"></div>
+            </div>
+            <div id="pgInfo" class="progress" role="progressbar" style="width: 0%" title="Information" data-bs-toggle="tooltip" data-bs-title="Information">
+                <div class="progress-bar progress-bar-striped bg-info"></div>
+            </div>
+            <div id="pgNotice" class="progress" role="progressbar" style="width: 0%" data-toggle="tooltip" title="Notice" data-bs-toggle="tooltip" data-bs-title="Notice">
+                <div class="progress-bar progress-bar-striped bg-success"></div>
+            </div>
+            <div id="pgWarning" class="progress" role="progressbar" style="width: 0%" data-toggle="tooltip" title="Warning" data-bs-toggle="tooltip" data-bs-title="Warning">
+                <div class="progress-bar progress-bar-striped bg-warning"></div>
+            </div>
+            <div id="pgError" class="progress" role="progressbar" style="width: 0%" data-toggle="tooltip" title="Error" data-bs-toggle="tooltip" data-bs-title="Error">
+                <div class="progress-bar progress-bar-striped bg-danger"></div>
+            </div>
         </div>
-        <button id="cmdSearch" type="submit" class="btn btn-default" data-toggle="tooltip-bottom" title="Refresh"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
-        <button id="cmdReset" type="submit" class="btn btn-default" data-toggle="tooltip-bottom" title="Reset all">Reset</button>
-      </form>
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
-</nav>
-
-<div id="debugmessages"></div>
-
-<div class="progress">
-  <div id="pgDebug" class="progress-bar progress-bar-primary progress-bar-striped" style="width: 0%" data-toggle="tooltip" title="Debug">
-    <span class="sr-only">20% Complete (debug)</span>
-  </div>
-  <div id="pgInfo" class="progress-bar progress-bar-info progress-bar-striped" style="width: 0%" data-toggle="tooltip" title="Information">
-    <span class="sr-only">20% Complete (info)</span>
-  </div>
-  <div id="pgNotice" class="progress-bar progress-bar-success progress-bar-striped" style="width: 0%" data-toggle="tooltip" title="Notice">
-    <span class="sr-only">20% Complete (notice)</span>
-  </div>
-  <div id="pgWarning" class="progress-bar progress-bar-warning progress-bar-striped" style="width: 0%" data-toggle="tooltip" title="Warning">
-    <span class="sr-only">20% Complete (warning)</span>
-  </div>
-  <div id="pgError" class="progress-bar progress-bar-danger progress-bar-striped" style="width: 0%" data-toggle="tooltip" title="Error">
-    <span class="sr-only">20% Complete (danger)</span>
-  </div>
-</div>
-
-<!-- Modal -->
-<div class="modal" id="mdEventDetails" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="mdEventDetailsLabel">Modal title</h4>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-      </div>
+<!-- small-table table-striped-->
+        <table id="table-style"
+               class="table"
+               data-toggle="table"
+               data-pagination="true"
+               data-page-size="100">
+            <thead> 
+                <tr>
+                    <th data-field="ID" data-visible="false" data-formatter="idFormat">Id</th>
+                    <th data-field="Priority" data-formatter="SeverityFormat">Severity</th>
+                    <th data-field="DeviceReportedTime">Date</th>
+                    <th data-field="Facility" data-formatter="FacilityFormat">Facility</th>
+                    <th data-field="FromHost">Host</th>
+                    <th data-field="SysLogTag">Syslogtag</th>
+                    <th data-field="SmallMessage" data-formatter="MessageFormat">Message</th>
+                </tr>
+            </thead>
+        </table>
     </div>
-  </div>
-</div>
-
-  <!-- Table class="table small-table" -->
-  <table id="table-style" class="table small-table table-striped" data-toggle="table" data-url="json/events.php" data-height="800" data-pagination="true" data-page-size="100">
-	<thead> 
-		<tr>
-			<th data-field="ID" data-visible="false" data-formatter="idFormat">Id</th>
-			<th data-field="Priority" data-formatter="SeverityFormat">Severity</th>
-			<th data-field="DeviceReportedTime">Date</th>
-			<th data-field="Priority" data-visible="false">HiddenSeverity</th>
-			<th data-field="Facility" data-formatter="FacilityFormat">Facility</th>
-			<th data-field="FromHost">Host</th>
-			<th data-field="SysLogTag">Syslogtag</th>
-			<th data-field="processid" data-visible="false">ProcessID</th>
-			<th data-field="Messagetype" data-formatter="MessagetypeFormat">Messagetype</th>
-			<th data-field="SmallMessage" data-toggle="tooltip" data-content="Message" data-formatter="MessageFormat">Message</th>
-			<th data-field="Message" data-visible="false" data-formatter="LargeMessageFormat">Message</th>
-		</tr>
-	</thead>
-  </table>
-  
-</div>
-<footer class="footer">
-    <div class="container">
-	</div>
-</footer>
-  </body>
+</body>
 </html>
 

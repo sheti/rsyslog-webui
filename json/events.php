@@ -3,7 +3,7 @@
 
 	header( 'Content-Type: application/json' );
 			
-	$query = "SELECT *, LEFT(Message, 120) AS SmallMessage FROM SystemEvents ";
+	$query = "SELECT ID, Priority, DeviceReportedTime, Facility, FromHost, SysLogTag, Message, LEFT(Message, 120) AS SmallMessage FROM SystemEvents ";
 	$wherestring = "";
 	if (isset($_GET[ "search" ])){
 		$searchstring = $_GET[ "search" ];
@@ -107,11 +107,10 @@
 	$rows = array();
 	$stmt = $db->prepare($query . $wherestring . " ORDER BY ID DESC LIMIT 2000");
 
-	if( $stmt->execute( $qArray ) )
-	foreach( $stmt as $row ) {
-		$rows[] = $row;
-	}
+	if( $stmt->execute( $qArray ) ) {
+            foreach( $stmt as $row ) {
+                    $rows[] = $row;
+            }
+        }
 
 	echo json_encode( $rows );
-
-?>
