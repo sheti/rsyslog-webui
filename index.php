@@ -45,9 +45,23 @@
     <script type="text/javascript">
 	
     $(function () {
-        
+        // Tooltip aktivieren
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+        // Theme switch
+        const htmlElement = document.documentElement;
+        const switchElement = document.getElementById('darkModeSwitch');
+        const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const currentTheme = localStorage.getItem('bsTheme') || (prefersDarkScheme ? 'dark' : 'light');
+
+        htmlElement.setAttribute('data-bs-theme', currentTheme);
+        switchElement.checked = currentTheme === 'dark';
+
+        switchElement.addEventListener('change', function () {
+            const newTheme = this.checked ? 'dark' : 'light';
+            htmlElement.setAttribute('data-bs-theme', newTheme);
+            localStorage.setItem('bsTheme', newTheme);
+        });
 
         getEvents();
 
@@ -334,6 +348,12 @@
                             <a class="nav-link active" aria-current="page" href="/"><i class="bi bi-house"></i></a>
                         </li>
                     </ul>
+                    <div class="p-1 me-2 border rounded">
+                        <div class="form-check form-switch form-check-reverse">
+                            <input class="form-check-input" type="checkbox" id="darkModeSwitch" checked title="Switch between light and dark mode">
+                            <i class="bi bi-lightbulb"></i>
+                        </div>
+                    </div>
                     <form class="d-flex" role="search">
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-search"></i></span>
