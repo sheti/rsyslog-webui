@@ -15,7 +15,7 @@ Requirements
 Installation
 ---
 * Clone from github
-`git clone "https://github.com/Tiny-Lama/rsyslog-webui.git" /var/www/html/syslog-ui
+`git clone "https://github.com/sheti/rsyslog-webui.git" /var/www/html/syslog-ui
 
 * Create the required config from the template
 `cp /var/www/html/syslog/config-template.php /var/www/html/syslog/config.php
